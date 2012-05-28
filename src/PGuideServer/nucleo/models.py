@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-from PGuideServer.nucleo.combo_fields import COMBO_ESTADOS
+from PGuideServer.nucleo.combo_fields import COMBO_ESTADOS, CATEGORIAS_ITENS
 
 class Marca(models.Model):
     nome = models.CharField(max_length = 100)
@@ -15,7 +15,7 @@ class Marca(models.Model):
 
 
 class Categoria(models.Model):
-    categoria = models.CharField(max_length = 100)
+    categoria = models.CharField(max_length = 100, choices = CATEGORIAS_ITENS)
     
     def __unicode__(self):
         return self.categoria
@@ -27,6 +27,7 @@ class Categoria(models.Model):
 class UnidadeDeMedida(models.Model):
     #simbolo = models.CharField(max_length = 10)
     unidade = models.CharField(max_length = 20)
+    sigla = models.CharField(max_length = 10)
     
     def __unicode__(self):
         return self.unidade
