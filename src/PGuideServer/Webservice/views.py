@@ -3,7 +3,9 @@ from django.contrib.auth import authenticate
 import simplejson
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from PGuideServer.nucleo.models import Usuario
+from PGuideServer.nucleo.models import Usuario, Item, Marca, Categoria,\
+    UnidadeDeMedida, HistoricoConsultas, ItemLista
+from django.core import serializers
 
 def login(request):
     username = request.GET['username']
@@ -86,4 +88,29 @@ def getProfile(request):
         simplejson.dumps({"username": "-1"}), 
         content_type = 'application/json; charset=utf8'
     )
+
+def getMarca(request):
+    marca_id = request.GET['marca_id']
     
+    marca = Marca.objects.get(id = marca_id)
+    
+    return HttpResponse(
+        simplejson.dumps({"marca": marca.nome}), 
+        content_type = 'application/json; charset=utf8'
+    )
+    
+
+def pesquisar(request):
+    palavra_chave = request.GET['palavra_chave']
+    username = request.GET['username']
+    
+    try:
+        user = User.objects.get(username = username)
+    except:
+        pass
+    
+    query = Item.objects.filter(nome__contains = palavra_chave)
+    data = serializers.serialize("json", query, indent=2)
+    
+    if user is not None:
+        return HttpResponse(data, content_type = "application/json; charset=utf8")

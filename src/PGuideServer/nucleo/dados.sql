@@ -38,3 +38,18 @@ INSERT INTO nucleo_categoria (id, categoria) VALUES (26, "Roupas");
 INSERT INTO nucleo_categoria (id, categoria) VALUES (27, "Serviços");
 INSERT INTO nucleo_categoria (id, categoria) VALUES (28, "Software");
 INSERT INTO nucleo_categoria (id, categoria) VALUES (29, "Viagens");
+
+
+
+INSERT INTO auth_user (id, first_name, last_name, username, email, password, is_staff, is_active, is_superuser, last_login, date_joined) VALUES (2, "Alezy", "Oliveira", "alezyoliveira@msn.com", "alezyoliveira@msn.com", "1", 1, 1, 0, "2012-05-28 12:00:54", "2012-05-28 12:00:42");
+
+INSERT INTO nucleo_usuario (id, user_id, cidade, estado) VALUES (1, 2, "Palmeira dos Índios", "Alagoas");
+
+
+
+INSERT INTO nucleo_marca (id, nome) VALUES (1, "All alimentos");
+INSERT INTO nucleo_marca (id, nome) VALUES (2, "Bic");
+
+INSERT INTO nucleo_item (id, nome, codigo, marca_id, categoria_id, tamanho, unidade_id) VALUES (1, "Mint Strips", "6928544904377", 1, 1, "16", 7);
+INSERT INTO nucleo_item (id, nome, codigo, marca_id, categoria_id, tamanho, unidade_id) VALUES (2, "Pilhas AAA R03 1,5V Super", "7033080198", 2, 12, "4", 7);
+
