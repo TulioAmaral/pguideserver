@@ -18,4 +18,6 @@ urlpatterns = patterns('',
     (r'^login/', "PGuideServer.Webservice.views.login"),
     (r'^cadastrar_usuario/', "PGuideServer.Webservice.views.cadastrar_usuario"),
     (r'^getProfile/', "PGuideServer.Webservice.views.getProfile"),
+    (r'^getMarca/', "PGuideServer.Webservice.views.getMarca"),
+    (r'^pesquisar/', "PGuideServer.Webservice.views.pesquisar"),
 )
