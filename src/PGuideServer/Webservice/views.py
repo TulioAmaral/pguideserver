@@ -98,6 +98,30 @@ def getMarca(request):
         simplejson.dumps({"marca": marca.nome}), 
         content_type = 'application/json; charset=utf8'
     )
+
+
+def getUnidadesDeMedida(request):
+    unidades = UnidadeDeMedida.objects.all()
+    l = []
+    for unidade in unidades:
+        l.append(unidade.unidade)
+    
+    return HttpResponse(
+        simplejson.dumps({"unidades": l}), 
+        content_type = 'application/json; charset=utf8'
+    )
+
+
+def getCategorias(request):
+    categorias = Categoria.objects.all()
+    l = []
+    for categoria in categorias:
+        l.append(categoria.categoria)
+    
+    return HttpResponse(
+        simplejson.dumps({"categorias": l}), 
+        content_type = 'application/json; charset=utf8'
+    )
     
 
 def pesquisar(request):

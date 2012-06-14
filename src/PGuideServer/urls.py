@@ -14,10 +14,19 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
     
-    # webservice
+    #####  webservice urls ####
     (r'^login/', "PGuideServer.Webservice.views.login"),
     (r'^cadastrar_usuario/', "PGuideServer.Webservice.views.cadastrar_usuario"),
+    
+    # single
     (r'^getProfile/', "PGuideServer.Webservice.views.getProfile"),
     (r'^getMarca/', "PGuideServer.Webservice.views.getMarca"),
+    
+    # search
     (r'^pesquisar/', "PGuideServer.Webservice.views.pesquisar"),
+    
+    # all
+    (r'^getUnidadesDeMedida/', "PGuideServer.Webservice.views.getUnidadesDeMedida"),
+    (r'^getCategorias/', "PGuideServer.Webservice.views.getCategorias"),
+
 )
