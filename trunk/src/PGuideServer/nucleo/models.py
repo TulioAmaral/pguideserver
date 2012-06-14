@@ -33,7 +33,8 @@ class UnidadeDeMedida(models.Model):
         return self.unidade
     
     def field_list(self):
-        return [(u'unidade', self.unidade)]
+        return [(u'unidade', self.unidade),
+                (u'sigla', self.sigla)]
     
 
 class Item(models.Model):

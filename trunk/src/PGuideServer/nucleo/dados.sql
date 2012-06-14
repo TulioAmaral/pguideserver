@@ -1,13 +1,13 @@
-INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (1, "grama", "g");
-INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (2, "quilo", "kg");
-INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (3, "tonelada", "t");
-INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (4, "milímetro", "mm");
-INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (5, "centímetro", "cm");
-INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (6, "metro", "m");
-INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (7, "unidade", "");
-INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (8, "caixa", "cx");
-INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (9, "mililitro", "ml");
-INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (10, "litro", "L");
+INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (1, "grama(s)", "g");
+INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (2, "quilo(s)", "kg");
+INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (3, "tonelada(s)", "t");
+INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (4, "milímetro(s)", "mm");
+INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (5, "centímetro(s)", "cm");
+INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (6, "metro(s)", "m");
+INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (7, "unidade(s)", "");
+INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (8, "caixa(s)", "cx");
+INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (9, "mililitro(s)", "ml");
+INSERT INTO nucleo_unidadedemedida (id, unidade, sigla) VALUES (10, "litro(s)", "L");
 
 INSERT INTO nucleo_categoria (id, categoria) VALUES (1, "Alimentos e bebidas");
 INSERT INTO nucleo_categoria (id, categoria) VALUES (2, "Automotivo");
