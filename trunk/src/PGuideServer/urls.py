@@ -21,6 +21,8 @@ urlpatterns = patterns('',
     # single
     (r'^getProfile/', "PGuideServer.Webservice.views.getProfile"),
     (r'^getMarca/', "PGuideServer.Webservice.views.getMarca"),
+    (r'^getItemID/', "PGuideServer.Webservice.views.getItemID"),
+    (r'^getItem/', "PGuideServer.Webservice.views.getItem"),
     
     # search
     (r'^pesquisar/', "PGuideServer.Webservice.views.pesquisar"),

@@ -4,7 +4,7 @@ import simplejson
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from PGuideServer.nucleo.models import Usuario, Item, Marca, Categoria,\
-    UnidadeDeMedida, HistoricoConsultas, ItemLista
+    UnidadeDeMedida
 from django.core import serializers
 
 def login(request):
@@ -138,3 +138,47 @@ def pesquisar(request):
     
     if user is not None:
         return HttpResponse(data, content_type = "application/json; charset=utf8")
+    
+
+def getItemID(request):
+    codigo = request.GET['codigo']
+    username = request.GET['username']
+    
+    try:
+        user = User.objects.get(username = username)
+    except:
+        pass
+    
+    try:
+        item = Item.objects.get(codigo = codigo)
+    except:
+        item = Item()
+        item.id = -1
+    
+    if user is not None:
+        return HttpResponse(
+            simplejson.dumps({"item_id": item.id}), 
+            content_type = 'application/json; charset=utf8'
+        )
+    
+
+def getItem(request):
+    n_id = int(request.GET['id'])
+    username = request.GET['username']
+    
+    try:
+        user = User.objects.get(username = username)
+    except:
+        pass
+    
+    try:
+        item = Item.objects.filter(id = n_id)
+    except:
+        pass
+    
+    data = serializers.serialize("json", item, indent=2)
+    
+    if user is not None:
+        return HttpResponse(data, 
+            content_type = 'application/json; charset=utf8'
+        )
