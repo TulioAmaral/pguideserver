@@ -58,10 +58,21 @@ class Item(models.Model):
     
 
 class ItemLista(models.Model):
-    item = models.CharField(max_length = 100)
+    '''
+    Relaciona os itens que usuários possuem em sua lista de compras
+    
+        # status:
+        #    1 = ativo (para comprar)
+        #    2 = ativo (já comprado)
+        #    3 = arquivado (comprado)
+        #    4 = arquivado (cancelado)
+        #    4 = excluído (invisível para o usuário, mas útil para a recomendação)
+    '''
+    item = models.ForeignKey(Item)
     user = models.ForeignKey("Usuario")
     quantidade = models.FloatField()
     status = models.IntegerField()
+
     
     def field_list(self):
         return [(u'item', self.item),
@@ -70,9 +81,10 @@ class ItemLista(models.Model):
                 (u'status', self.status)]
 
 
-class Usuario(models.Model):
+#class Usuario(models.Model):
+class Usuario(User):
     # more info: https://docs.djangoproject.com/en/dev/topics/auth/
-    user = models.OneToOneField(User)
+    #user = models.OneToOneField(User)
     # username
     # first_name
     # last_name
@@ -87,6 +99,7 @@ class Usuario(models.Model):
     
     def field_list(self):
         return [(u'user', self.user)]
+
 
 class HistoricoConsultas(models.Model):
     consultas = models.ManyToManyField(ItemLista)

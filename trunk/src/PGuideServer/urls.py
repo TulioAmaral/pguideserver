@@ -24,8 +24,12 @@ urlpatterns = patterns('',
     (r'^getItemID/', "PGuideServer.Webservice.views.getItemID"),
     (r'^getItem/', "PGuideServer.Webservice.views.getItem"),
     
+    # set
+    (r'^adicionarItemNaLista/', "PGuideServer.Webservice.views.adicionarItemNaLista"),
+    
     # search
     (r'^pesquisar/', "PGuideServer.Webservice.views.pesquisar"),
+    (r'^getListaDeCompras/', "PGuideServer.Webservice.views.getListaDeCompras"),
     
     # all
     (r'^getUnidadesDeMedida/', "PGuideServer.Webservice.views.getUnidadesDeMedida"),
