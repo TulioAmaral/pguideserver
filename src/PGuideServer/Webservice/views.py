@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from django.contrib.auth import authenticate
+#from django.contrib.auth import authenticate
 import simplejson
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from PGuideServer.nucleo.models import Usuario, Item, Marca, Categoria,\
-    UnidadeDeMedida
+    UnidadeDeMedida, ItemLista
 from django.core import serializers
 
 def login(request):
@@ -12,9 +12,12 @@ def login(request):
     password = request.GET['password']
     
     try:
-        user = authenticate(username = username, password = password)
+        #user = authenticate(username = username, password = password)
+        user = User.objects.get(username = username)
+        if user.password != password:
+            user = None
     except:
-        pass
+        user = None
         
     if user is not None:
         if user.is_active:
@@ -69,17 +72,16 @@ def getProfile(request):
     username = request.GET['username']
     
     try:
-        user = User.objects.get(username = username)
-        usuario = Usuario.objects.get(user = user)
+        usuario = Usuario.objects.get(username = username)
     except:
         pass
         
-    if user is not None:
+    if usuario is not None:
         return HttpResponse(
-            simplejson.dumps({"username": user.username,
-                              "email": user.email,
-                              "nome": user.first_name,
-                              "sobrenome": user.last_name,
+            simplejson.dumps({"username": usuario.username,
+                              "email": usuario.email,
+                              "nome": usuario.first_name,
+                              "sobrenome": usuario.last_name,
                               "cidade": usuario.cidade,
                               "estado": usuario.estado}), 
             content_type = 'application/json; charset=utf8'
@@ -182,3 +184,54 @@ def getItem(request):
         return HttpResponse(data, 
             content_type = 'application/json; charset=utf8'
         )
+
+
+def getListaDeCompras(request):
+    username = request.GET['username']
+    
+    try:
+        user = User.objects.get(username = username)
+    except:
+        pass
+    
+    lista = []
+    try:
+        lista.extend(ItemLista.objects.filter(user = user, status = 1)) # ativos não comprados
+        lista.extend(ItemLista.objects.filter(user = user, status = 2)) # ativos comprados
+    except:
+        pass
+    
+    data = serializers.serialize("json", lista, indent=2)
+    
+    if user is not None:
+        return HttpResponse(data, 
+            content_type = 'application/json; charset=utf8'
+        )
+    
+
+def adicionarItemNaLista(request):
+    username = request.GET['username']
+    item = Item.objects.get(id = request.GET['item'])
+    status = request.GET['status']
+    quantidade = request.GET['quantidade']
+    
+    item_lista = user = None
+    try:
+        user = Usuario.objects.get(username = username)
+        novo_item_da_lista = ItemLista()
+        novo_item_da_lista.user = user
+        novo_item_da_lista.status = status
+        novo_item_da_lista.quantidade = quantidade
+        novo_item_da_lista.item = item
+        novo_item_da_lista.save()
+        item_lista = ItemLista.objects.filter(user = user, status = status, quantidade = quantidade, item = item)[0]
+        results = {"sucesso_add_item": True}
+    except Exception, e:
+        results = {"sucesso_add_item": False}
+        results["erro"] = e
+    
+    return HttpResponse(
+        simplejson.dumps(results), 
+        content_type = 'application/json; charset=utf8'
+    )
+
