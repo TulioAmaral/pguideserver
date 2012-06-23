@@ -67,6 +67,33 @@ def cadastrar_usuario(request):
         simplejson.dumps(dictionary), 
         content_type = 'application/json; charset=utf8'
     )
+    
+def limparListaDeCompras(request):
+    username = request.GET['username']
+    
+    dictionary = {"sucesso_limpar_lista": True}
+    
+    try:
+        user = Usuario.objects.get(username = username)
+    except Exception as error:
+        dictionary["sucesso_limpar_lista"] = False
+        dictionary["erro"] = error
+        
+    try:
+        itens = []
+        itens.extend(ItemLista.objects.filter(user = user, status = 1))
+        itens.extend(ItemLista.objects.filter(user = user, status = 2))
+        for item in itens:
+            item.status = 5
+            item.save(force_update=True)
+    except Exception as error:
+        dictionary["sucesso_limpar_lista"] =  False
+        dictionary["erro"] = error
+        
+    return HttpResponse(
+        simplejson.dumps(dictionary), 
+        content_type = 'application/json; charset=utf8'
+    )
 
 def getProfile(request):
     username = request.GET['username']
@@ -215,7 +242,6 @@ def adicionarItemNaLista(request):
     status = request.GET['status']
     quantidade = request.GET['quantidade']
     
-    item_lista = user = None
     try:
         user = Usuario.objects.get(username = username)
         novo_item_da_lista = ItemLista()
@@ -224,11 +250,51 @@ def adicionarItemNaLista(request):
         novo_item_da_lista.quantidade = quantidade
         novo_item_da_lista.item = item
         novo_item_da_lista.save()
-        item_lista = ItemLista.objects.filter(user = user, status = status, quantidade = quantidade, item = item)[0]
         results = {"sucesso_add_item": True}
     except Exception, e:
         results = {"sucesso_add_item": False}
         results["erro"] = e
+    
+    return HttpResponse(
+        simplejson.dumps(results), 
+        content_type = 'application/json; charset=utf8'
+    )
+
+
+def alterarStatusDoItemDaLista(request):
+    username = request.GET['username']
+    _id = request.GET['id']
+    status = request.GET['status']
+    
+    try:
+        user = Usuario.objects.get(username = username)
+        if user is not None:
+            item_lista = ItemLista.objects.get(id = _id)
+            item_lista.status = status
+            item_lista.save(force_update = True)
+            results = {"sucesso_alterar_status_item": "ok"}
+    except Exception as error:
+        results = {"sucesso_alterar_status_item": error}
+    
+    return HttpResponse(
+        simplejson.dumps(results), 
+        content_type = 'application/json; charset=utf8'
+    )
+
+
+def removerItemDaLista(request):
+    username = request.GET['username']
+    _id = request.GET['id']
+    
+    try:
+        user = Usuario.objects.get(username = username)
+        if user is not None:
+            item_lista = ItemLista.objects.get(id = _id)
+            item_lista.status = 5
+            item_lista.save(force_update = False)
+            results = {"sucesso_remover_item_da_lista": "ok"}
+    except Exception as error:
+        results = {"sucesso_remover_item_da_lista": error}
     
     return HttpResponse(
         simplejson.dumps(results), 

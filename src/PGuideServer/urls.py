@@ -35,4 +35,10 @@ urlpatterns = patterns('',
     (r'^getUnidadesDeMedida/', "PGuideServer.Webservice.views.getUnidadesDeMedida"),
     (r'^getCategorias/', "PGuideServer.Webservice.views.getCategorias"),
 
+    # edit
+    (r'^alterarStatusDoItemDaLista/', "PGuideServer.Webservice.views.alterarStatusDoItemDaLista"),
+    
+    # delete
+    (r'^limparListaDeCompras/', "PGuideServer.Webservice.views.limparListaDeCompras"),
+    (r'^removerItemDaLista/', "PGuideServer.Webservice.views.removerItemDaLista"),
 )
