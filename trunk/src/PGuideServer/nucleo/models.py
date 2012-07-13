@@ -3,6 +3,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from PGuideServer.nucleo.combo_fields import COMBO_ESTADOS, CATEGORIAS_ITENS
+import datetime
 
 class Marca(models.Model):
     nome = models.CharField(max_length = 100)
@@ -102,10 +103,8 @@ class Usuario(User):
 
 
 class HistoricoConsultas(models.Model):
-    consultas = models.ManyToManyField(ItemLista)
-    
-    def field_list(self):
-        return [(u'consultas', self.consultas)]
+    user = models.ForeignKey(Usuario)
+    item = models.ForeignKey(Item)
 
 
 class Estabelecimento(models.Model):
@@ -115,8 +114,13 @@ class Estabelecimento(models.Model):
     bairro = models.CharField(max_length = 200)
     cidade = models.CharField(max_length = 100)
     estado = models.CharField(max_length = 100, choices = COMBO_ESTADOS)
+    cnpj = models.CharField(max_length = 40)
+    formas_de_pagamento = models.CharField(max_length = 100)
     latitude = models.FloatField()
     longitude = models.FloatField()
+    
+    def __unicode__(self):
+        return self.nome_curto
     
     def field_list(self):
         return [(u'nome_curto', self.nome_curto),
@@ -125,5 +129,39 @@ class Estabelecimento(models.Model):
                 (u'bairro', self.bairro),
                 (u'cidade', self.cidade),
                 (u'estado', self.estado),
+                (u'cnpj', self.cnpj),
+                (u'formas_de_pagamento', self.formas_de_pagamento),
                 (u'latitude', self.latitude),
                 (u'longitude', self.longitude)]
+
+
+class ItemEstabelecimento(models.Model):
+    # disponibilidade:
+    #    1: disponível em estoque
+    #    2: disponível para pré-venda
+    #    3: indisponível
+    estabelecimento = models.ForeignKey(Estabelecimento)
+    item = models.ForeignKey(Item)
+    disponibilidade = models.IntegerField()
+    preco = models.FloatField()
+    desconto = models.FloatField()
+    data = models.DateTimeField(default = datetime.datetime.now())
+    
+    def __unicode__(self):
+        return str(self.estabelecimento.nome_curto) + " - " + str(self.item.nome)
+    
+    def field_list(self):
+        return [(u'estabelecimento', self.estabelecimento),
+                (u'item', self.item),
+                (u'disponibilidade', self.disponibilidade),
+                (u'preco', self.preco),
+                (u'desconto', self.desconto)]
+
+class FormasDePagamento(models.Model):
+    forma_de_pagamento = models.CharField(max_length = 100)
+    
+    def __unicode__(self):
+        return self.forma_de_pagamento
+    
+    def field_list(self):
+        return [(u"forma_de_pagamento"), self.forma_de_pagamento]        

@@ -4,7 +4,8 @@ import simplejson
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from PGuideServer.nucleo.models import Usuario, Item, Marca, Categoria,\
-    UnidadeDeMedida, ItemLista
+    UnidadeDeMedida, ItemLista, ItemEstabelecimento, HistoricoConsultas,\
+    Estabelecimento
 from django.core import serializers
 
 def login(request):
@@ -189,6 +190,14 @@ def getItemID(request):
             simplejson.dumps({"item_id": item.id}), 
             content_type = 'application/json; charset=utf8'
         )
+
+def getEstabelecimento(request):
+    id = request.GET["id"]
+
+    estabelecimento = Estabelecimento.objects.filter(pk=id)
+    
+    data = serializers.serialize("json", estabelecimento, indent=2)
+    return HttpResponse(data, content_type = 'application/json; charset=utf8')
     
 
 def getItem(request):
@@ -301,3 +310,32 @@ def removerItemDaLista(request):
         content_type = 'application/json; charset=utf8'
     )
 
+
+def buscarRecomendacaoProduto(request):
+    username = request.GET['username']
+    #criterios = request.GET['criterios'] # vem no formato de cadeia de caracteres binários: 0110
+    id_item = request.GET['ID']
+    
+    try:
+        busca = []
+        busca.extend(ItemEstabelecimento.objects.filter(item = id_item, disponibilidade = 1))
+        busca.extend(ItemEstabelecimento.objects.filter(item = id_item, disponibilidade = 2))
+    except:
+        busca = []
+    
+    try:
+        historico = HistoricoConsultas()
+        user = Usuario.objects.get(username=username)
+        historico.user = user
+        historico.item = Item.objects.get(pk=id_item)
+        historico.save()
+    except:
+        pass
+    
+    data = serializers.serialize("json", busca, indent=2)
+    
+    if user is not None:
+        return HttpResponse(data, 
+            content_type = 'application/json; charset=utf8'
+        )
+    
