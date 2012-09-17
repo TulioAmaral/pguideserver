@@ -1,4 +1,6 @@
 eclipse.preferences.version=1
+encoding//src/PGuideServer/Recomendacao/utils.py=utf-8
+encoding//src/PGuideServer/Recomendacao/views.py=utf-8
 encoding//src/PGuideServer/Webservice/views.py=utf-8
 encoding//src/PGuideServer/nucleo/combo_fields.py=utf-8
 encoding//src/PGuideServer/nucleo/models.py=utf-8

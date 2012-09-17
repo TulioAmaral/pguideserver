@@ -52,9 +52,11 @@ INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (10, "Merca
 INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (11, "Pagamento digital");
 INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (12, "Pag Seguro");
 
+INSERT INTO nucleo_preferenciasdousuario (id, minPrecoItem, maxPrecoItem, relevanciaPrecoItem, minDistanciaItem, maxDistanciaItem, relevanciaDistanciaItem, minReputacaoItem, maxReputacaoItem, relevanciaReputacaoItem, formasPagamento) VALUES (1, 0, 1000000, 100, 0, 20000000, 100, 0, 5, 100, "[1]");
+
 INSERT INTO auth_user (id, first_name, last_name, username, email, password, is_staff, is_active, is_superuser, last_login, date_joined) VALUES (2, "Alezy", "Oliveira", "alezyoliveira@msn.com", "alezyoliveira@msn.com", "1", 1, 1, 0, "2012-05-28 12:00:54", "2012-05-28 12:00:42");
 
-INSERT INTO nucleo_usuario (user_ptr_id, cidade, estado) VALUES (2, "Palmeira dos Índios", "Alagoas");
+INSERT INTO nucleo_usuario (user_ptr_id, cidade, estado, preferencias) VALUES (2, "Palmeira dos Índios", "Alagoas", 1);
 
 INSERT INTO nucleo_marca (id, nome) VALUES (1, "All alimentos");
 INSERT INTO nucleo_marca (id, nome) VALUES (2, "Bic");
@@ -64,9 +66,13 @@ INSERT INTO nucleo_item (id, nome, codigo, marca_id, categoria_id, tamanho, unid
 
 INSERT INTO nucleo_itemlista (id, item_id, user_id, quantidade, status) VALUES (1, 1, 2, 2, 1);
 
-INSERT INTO nucleo_estabelecimento (id, nome_curto, nome_completo, endereco, bairro, cidade, estado, cnpj, formas_de_pagamento, latitude, longitude) VALUES (1, "Ponto Frio", "NOVA PONTOCOM COMERCIO ELETRONICO", "Estrada do Ingai, 200", "Dos Altos", "Barueri", "SP", "09.358.108/0002-06", "[1]", -23.498022, -46.967629);
-INSERT INTO nucleo_estabelecimento (id, nome_curto, nome_completo, endereco, bairro, cidade, estado, cnpj, formas_de_pagamento, latitude, longitude) VALUES (2, "Compra Fácil", "SOC COM IMP HERMES S/A", "Av. Brasil, 44228", "Campo Grande", "Rio de Janeiro", "RJ", "33.068.883/0002-01", "[1]", -22.865687, -43.580608);
-INSERT INTO nucleo_estabelecimento (id, nome_curto, nome_completo, endereco, bairro, cidade, estado, cnpj, formas_de_pagamento, latitude, longitude) VALUES (3, "Americanas", "B2W COMPANHIA GLOBAL DO VAREJO", "Rod BR 101 Sul, km 29.6, 29600", "Pt dos Carvalho", "Cabo de Santo Agostinho", "PE", "00.776.574/0011-28", "[1]", -8.282078, -35.057817);
+INSERT INTO nucleo_reputacao (id, quantidade_avaliacoes, media) VALUES (1, 2, 5.0);
+INSERT INTO nucleo_reputacao (id, quantidade_avaliacoes, media) VALUES (2, 2, 3.4);
+INSERT INTO nucleo_reputacao (id, quantidade_avaliacoes, media) VALUES (3, 2, 4.1);
+
+INSERT INTO nucleo_estabelecimento (id, nome_curto, nome_completo, endereco, bairro, cidade, estado, cnpj, formas_de_pagamento, reputacao_id, latitude, longitude) VALUES (1, "Ponto Frio", "NOVA PONTOCOM COMERCIO ELETRONICO", "Estrada do Ingai, 200", "Dos Altos", "Barueri", "SP", "09.358.108/0002-06", "[1]", 1, -23.498022, -46.967629);
+INSERT INTO nucleo_estabelecimento (id, nome_curto, nome_completo, endereco, bairro, cidade, estado, cnpj, formas_de_pagamento, reputacao_id, latitude, longitude) VALUES (2, "Compra Fácil", "SOC COM IMP HERMES S/A", "Av. Brasil, 44228", "Campo Grande", "Rio de Janeiro", "RJ", "33.068.883/0002-01", "[1]", 2, -22.865687, -43.580608);
+INSERT INTO nucleo_estabelecimento (id, nome_curto, nome_completo, endereco, bairro, cidade, estado, cnpj, formas_de_pagamento, reputacao_id, latitude, longitude) VALUES (3, "Americanas", "B2W COMPANHIA GLOBAL DO VAREJO", "Rod BR 101 Sul, km 29.6, 29600", "Pt dos Carvalho", "Cabo de Santo Agostinho", "PE", "00.776.574/0011-28", "[1]", 3, -8.282078, -35.057817);
 
 INSERT INTO nucleo_itemestabelecimento (id, estabelecimento_id, item_id, disponibilidade, preco, desconto, data) VALUES (1, 1, 1, 1, 2.50, 0, "2012-06-24 12:41:31");
 INSERT INTO nucleo_itemestabelecimento (id, estabelecimento_id, item_id, disponibilidade, preco, desconto, data) VALUES (2, 2, 1, 1, 2.00, 0, "2012-06-24 12:42:31");

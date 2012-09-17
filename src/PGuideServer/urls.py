@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     #####  webservice urls ####
     (r'^login/', "PGuideServer.Webservice.views.login"),
     (r'^cadastrar_usuario/', "PGuideServer.Webservice.views.cadastrar_usuario"),
+    (r'^cadastrar_preferencias/', "PGuideServer.Webservice.views.cadastrar_preferencias"),
     
     # single
     (r'^getProfile/', "PGuideServer.Webservice.views.getProfile"),
@@ -36,6 +37,7 @@ urlpatterns = patterns('',
     # all
     (r'^getUnidadesDeMedida/', "PGuideServer.Webservice.views.getUnidadesDeMedida"),
     (r'^getCategorias/', "PGuideServer.Webservice.views.getCategorias"),
+    (r'^getFormasDePagamento/', "PGuideServer.Webservice.views.getFormasDePagamento"),
 
     # edit
     (r'^alterarStatusDoItemDaLista/', "PGuideServer.Webservice.views.alterarStatusDoItemDaLista"),

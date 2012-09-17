@@ -94,12 +94,30 @@ class Usuario(User):
     # date_joined
     cidade = models.CharField(max_length = 100)
     estado = models.CharField(max_length = 100)
+    preferencias = models.IntegerField(null=True)
     
     def __unicode__(self):
         return self.user.username
     
     def field_list(self):
         return [(u'user', self.user)]
+
+
+class PreferenciasDoUsuario(models.Model):
+    
+    minPrecoItem = models.FloatField(default=0.0)
+    maxPrecoItem = models.FloatField(default=1000000.0) # 1 mi
+    relevanciaPrecoItem = models.FloatField(default=100.0) # 100%
+    
+    minDistanciaItem = models.FloatField(default=0.0)
+    maxDistanciaItem = models.FloatField(default=20000000) # 20.000 km
+    relevanciaDistanciaItem = models.FloatField(default=100.0)
+    
+    minReputacaoItem = models.FloatField(default=0)
+    maxReputacaoItem = models.FloatField(default=5) # 5 estrelas
+    relevanciaReputacaoItem = models.FloatField(default=100.0)
+    
+    formasPagamento = models.CharField(max_length=100)
 
 
 class HistoricoConsultas(models.Model):
@@ -116,6 +134,7 @@ class Estabelecimento(models.Model):
     estado = models.CharField(max_length = 100, choices = COMBO_ESTADOS)
     cnpj = models.CharField(max_length = 40)
     formas_de_pagamento = models.CharField(max_length = 100)
+    reputacao = models.OneToOneField("Reputacao")
     latitude = models.FloatField()
     longitude = models.FloatField()
     
@@ -133,6 +152,15 @@ class Estabelecimento(models.Model):
                 (u'formas_de_pagamento', self.formas_de_pagamento),
                 (u'latitude', self.latitude),
                 (u'longitude', self.longitude)]
+
+
+class Reputacao(models.Model):
+    quantidade_avaliacoes = models.IntegerField()
+    media = models.FloatField()
+    
+    def addVoto(self, nota):
+        self.media = ((self.quantidade_avaliacoes * self.media) + nota)/(self.quantidade_avaliacoes+1.0)
+        self.quantidade_avaliacoes += self.quantidade_avaliacoes
 
 
 class ItemEstabelecimento(models.Model):
