@@ -101,4 +101,5 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'PGuideServer.nucleo',
     'PGuideServer.Webservice',
+    'PGuideServer.Recomendacao',
 )

@@ -5,8 +5,10 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from PGuideServer.nucleo.models import Usuario, Item, Marca, Categoria,\
     UnidadeDeMedida, ItemLista, ItemEstabelecimento, HistoricoConsultas,\
-    Estabelecimento
+    Estabelecimento, PreferenciasDoUsuario, FormasDePagamento
 from django.core import serializers
+from PGuideServer.Recomendacao.utils import Localizacao, Valores
+from PGuideServer.Recomendacao.views import avaliar
 
 def login(request):
     username = request.GET['username']
@@ -41,21 +43,13 @@ def cadastrar_usuario(request):
     
     dictionary = {"sucesso_cadastro": True}
     
-    user = User()
-    user.username = email
-    user.first_name = nome
-    user.last_name = sobrenome
-    user.email = email
-    user.password = senha
-    user.save()
-    try:
-        user = User.objects.get(username = email)
-    except Exception as error:
-        dictionary["sucesso_cadastro"] = False
-        dictionary["erro"] = error
-    
     usuario = Usuario()
-    usuario.user = user
+    usuario.username = email
+    usuario.first_name = nome
+    usuario.last_name = sobrenome
+    usuario.email = email
+    usuario.password = senha
+    
     usuario.cidade = cidade
     usuario.estado = estado
     try:
@@ -63,9 +57,45 @@ def cadastrar_usuario(request):
     except Exception as error:
         dictionary["sucesso_cadastro"] =  False
         dictionary["erro"] = error
+        print error
         
     return HttpResponse(
         simplejson.dumps(dictionary), 
+        content_type = 'application/json; charset=utf8'
+    )
+
+def cadastrar_preferencias(request):
+    username = request.GET['username']
+    minPreco = request.GET['minPreco']
+    maxPreco = request.GET['maxPreco']
+    minReputacao = request.GET['minReputacao']
+    minDistancia = request.GET['minDistancia']
+    maxDistancia = request.GET['maxDistancia']
+    formasDePagamento = request.GET['formasDePagamento']
+    
+    pref = PreferenciasDoUsuario()
+    pref.minPrecoItem = minPreco
+    pref.maxPrecoItem = maxPreco
+    pref.minReputacaoItem = minReputacao
+    pref.maxReputacaoItem = 5
+    pref.minDistanciaItem = minDistancia
+    pref.maxDistanciaItem = maxDistancia
+    pref.formasPagamento = formasDePagamento
+    
+    try:
+        user = Usuario.objects.get(username=username)
+        if user.preferencias is not None:
+            pref.id = user.preferencias
+            pref.save(force_update=True)
+        else:
+            pref.save()
+        user.preferencias = pref
+        user.save(force_update=True)
+    except Exception as error:
+        print error
+        
+    return HttpResponse(
+        simplejson.dumps({'sucesso_cadastro': True}), 
         content_type = 'application/json; charset=utf8'
     )
     
@@ -164,6 +194,20 @@ def pesquisar(request):
         pass
     
     query = Item.objects.filter(nome__contains = palavra_chave)
+    data = serializers.serialize("json", query, indent=2)
+    
+    if user is not None:
+        return HttpResponse(data, content_type = "application/json; charset=utf8")
+    
+def getFormasDePagamento(request):
+    username = request.GET['username']
+    
+    try:
+        user = User.objects.get(username = username)
+    except:
+        pass
+    
+    query = FormasDePagamento.objects.all()
     data = serializers.serialize("json", query, indent=2)
     
     if user is not None:
@@ -312,27 +356,50 @@ def removerItemDaLista(request):
 
 
 def buscarRecomendacaoProduto(request):
+    '''
+        /buscarRecomendacaoProduto? username=XXX & ID=XXX & 
+                                    latitude=XXX & longitude=XXX
+                                    
+    '''
+    
     username = request.GET['username']
-    #criterios = request.GET['criterios'] # vem no formato de cadeia de caracteres binários: 0110
     id_item = request.GET['ID']
+    latitude = float(request.GET['latitude'])
+    longitude = float(request.GET['longitude'])
+    userLocation = Localizacao(latitude, longitude)
+    try:
+        user = Usuario.objects.get(username=username)
+    except Exception, e:
+        print e
+        return None
+    #criterios = request.GET['criterios'] # vem no formato de cadeia de caracteres binários: 0110
+    
+    busca = res_busca = []
     
     try:
-        busca = []
         busca.extend(ItemEstabelecimento.objects.filter(item = id_item, disponibilidade = 1))
         busca.extend(ItemEstabelecimento.objects.filter(item = id_item, disponibilidade = 2))
     except:
         busca = []
     
     try:
+        ind_preco = Valores(user.preferencias.minPrecoItem, user.preferencias.maxPrecoItem, user.preferencias.relevanciaPrecoItem)
+        ind_rep = Valores(user.preferencias.minReputacaoItem, user.preferencias.maxReputacaoItem, user.preferencias.relevanciaReputacaoItem)
+        ind_dist = Valores(user.preferencias.minDistanciaItem, user.preferencias.maxDistanciaItem, user.preferencias.relevanciaDistanciaItem)
+        res_busca = avaliar(userLocation, busca, ind_preco, ind_rep, ind_dist, [1])
+    except Exception, e:
+        print e
+    
+    try:
         historico = HistoricoConsultas()
-        user = Usuario.objects.get(username=username)
         historico.user = user
         historico.item = Item.objects.get(pk=id_item)
         historico.save()
     except:
         pass
     
-    data = serializers.serialize("json", busca, indent=2)
+    data = serializers.serialize("json", res_busca, indent=2)
+    #data = serializers.serialize("json", res_busca, indent=2)
     
     if user is not None:
         return HttpResponse(data, 
