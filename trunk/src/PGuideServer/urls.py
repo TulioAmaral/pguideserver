@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     (r'^getItemID/', "PGuideServer.Webservice.views.getItemID"),
     (r'^getItem/', "PGuideServer.Webservice.views.getItem"),
     (r'^getEstabelecimento/', "PGuideServer.Webservice.views.getEstabelecimento"),
+    (r'^getPreferencias/', "PGuideServer.Webservice.views.getPreferencias"),
     
     # set
     (r'^adicionarItemNaLista/', "PGuideServer.Webservice.views.adicionarItemNaLista"),

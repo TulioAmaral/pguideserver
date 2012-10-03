@@ -149,6 +149,39 @@ def getProfile(request):
         content_type = 'application/json; charset=utf8'
     )
 
+def getPreferencias(request):
+    username = request.GET['username']
+    
+    try:
+        usuario = Usuario.objects.get(username = username)
+    except:
+        pass
+        
+    if usuario is not None:
+        preferencias = PreferenciasDoUsuario.objects.get(id=usuario.preferencias)
+        return HttpResponse(
+            simplejson.dumps({
+                              "minPrecoItem": preferencias.minPrecoItem,
+                              "maxPrecoItem": preferencias.maxPrecoItem, # 1 mi
+                              "relevanciaPrecoItem": preferencias.relevanciaPrecoItem, # 100%
+                            
+                              "minDistanciaItem": preferencias.minDistanciaItem,
+                              "maxDistanciaItem": preferencias.maxDistanciaItem, # 20.000 km
+                              "relevanciaDistanciaItem": preferencias.relevanciaDistanciaItem,
+                            
+                              "minReputacaoItem": preferencias.minReputacaoItem,
+                              "maxReputacaoItem": preferencias.maxReputacaoItem, # 5 estrelas
+                              "relevanciaReputacaoItem": preferencias.relevanciaReputacaoItem,
+                            
+                              "formasPagamento": preferencias.formasPagamento
+                              }, indent=2), 
+            content_type = 'application/json; charset=utf8'
+        )
+    return HttpResponse(
+        simplejson.dumps({"username": "-1"}), 
+        content_type = 'application/json; charset=utf8'
+    )
+
 def getMarca(request):
     marca_id = request.GET['marca_id']
     
