@@ -67,13 +67,15 @@ class ItemLista(models.Model):
         #    2 = ativo (já comprado)
         #    3 = arquivado (comprado)
         #    4 = arquivado (cancelado)
-        #    4 = excluído (invisível para o usuário, mas útil para a recomendação)
+        #    5 = excluído (invisível para o usuário, mas útil para a recomendação)
     '''
     item = models.ForeignKey(Item)
     user = models.ForeignKey("Usuario")
     quantidade = models.FloatField()
     status = models.IntegerField()
 
+    def __unicode__(self):
+        return "item: " + str(self.item)
     
     def field_list(self):
         return [(u'item', self.item),
@@ -174,9 +176,6 @@ class ItemEstabelecimento(models.Model):
     preco = models.FloatField()
     desconto = models.FloatField()
     data = models.DateTimeField(default = datetime.datetime.now())
-    
-    def __unicode__(self):
-        return str(self.estabelecimento.nome_curto) + " - " + str(self.item.nome)
     
     def field_list(self):
         return [(u'estabelecimento', self.estabelecimento),

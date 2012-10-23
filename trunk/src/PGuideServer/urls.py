@@ -34,6 +34,7 @@ urlpatterns = patterns('',
     (r'^pesquisar/', "PGuideServer.Webservice.views.pesquisar"),
     (r'^getListaDeCompras/', "PGuideServer.Webservice.views.getListaDeCompras"),
     (r'^buscarRecomendacaoProduto/', "PGuideServer.Webservice.views.buscarRecomendacaoProduto"),
+    (r'^buscarRecomendacaoLista/', "PGuideServer.Webservice.views.buscarRecomendacaoLista"),
     
     # all
     (r'^getUnidadesDeMedida/', "PGuideServer.Webservice.views.getUnidadesDeMedida"),
