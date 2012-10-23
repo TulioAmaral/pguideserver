@@ -3,7 +3,7 @@
 
 from math import pi, sin, cos, sqrt, atan2
 from django.db import models
-from PGuideServer.nucleo.models import ItemEstabelecimento
+from PGuideServer.nucleo.models import ItemEstabelecimento, Estabelecimento
 
 class Valores:
     minimo = None
@@ -31,6 +31,11 @@ class AvaliacaoItem(models.Model):
     item = models.ForeignKey(ItemEstabelecimento)
     pontuacao = models.FloatField()
     
+class AvaliacaoEstabelecimento(models.Model):
+    estabelecimento = models.ForeignKey(Estabelecimento)
+    preco_total = models.FloatField()
+    pontuacao = models.FloatField()
+    
 class Localizacao:
     latitude = None
     longitude = None
@@ -38,6 +43,9 @@ class Localizacao:
     def __init__(self, lat, long):
         self.latitude = lat
         self.longitude = long
+        
+    def __unicode__(self):
+        return '[',self.latitude, ',', self.longitude,']'
     
 
 # funcoes
@@ -69,4 +77,4 @@ def calcularDistancia(localizacao_usuario, localizacao_estabelecimento):
     )
     c = 2.0 * atan2(sqrt(a), sqrt(1.0-a))
     km = earthradius * c
-    return km
+    return float("%.2f"%(km))

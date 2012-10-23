@@ -39,18 +39,18 @@ INSERT INTO nucleo_categoria (id, categoria) VALUES (26, "Serviços");
 INSERT INTO nucleo_categoria (id, categoria) VALUES (27, "Software");
 INSERT INTO nucleo_categoria (id, categoria) VALUES (28, "Viagens");
 
-INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (1, "À vista");
-INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (2, "Boleto");
-INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (3, "Cartão - débito à vista");
-INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (4, "Cartão - crédito à vista");
-INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (5, "Cartão - crédito parcelado");
-INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (6, "Prazo - Carnê");
-INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (7, "Prazo - Cheque");
-INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (8, "Depósito ou transferência");
-INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (9, "Paypal");
-INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (10, "Mercado Pago");
-INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (11, "Pagamento digital");
-INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (12, "Pag Seguro");
+INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (0, "À vista");
+INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (1, "Boleto");
+INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (2, "Cartão - débito à vista");
+INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (3, "Cartão - crédito à vista");
+INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (4, "Cartão - crédito parcelado");
+INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (5, "Prazo - Carnê");
+INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (6, "Prazo - Cheque");
+INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (7, "Depósito ou transferência");
+INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (8, "Paypal");
+INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (9, "Mercado Pago");
+INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (10, "Pagamento digital");
+INSERT INTO nucleo_formasdepagamento (id, forma_de_pagamento) VALUES (11, "Pag Seguro");
 
 INSERT INTO nucleo_preferenciasdousuario (id, minPrecoItem, maxPrecoItem, relevanciaPrecoItem, minDistanciaItem, maxDistanciaItem, relevanciaDistanciaItem, minReputacaoItem, maxReputacaoItem, relevanciaReputacaoItem, formasPagamento) VALUES (1, 0, 1000000, 100, 0, 20000000, 100, 0, 5, 100, "[1]");
 
@@ -78,5 +78,5 @@ INSERT INTO nucleo_itemestabelecimento (id, estabelecimento_id, item_id, disponi
 INSERT INTO nucleo_itemestabelecimento (id, estabelecimento_id, item_id, disponibilidade, preco, desconto, data) VALUES (2, 2, 1, 1, 2.00, 0, "2012-06-24 12:42:31");
 INSERT INTO nucleo_itemestabelecimento (id, estabelecimento_id, item_id, disponibilidade, preco, desconto, data) VALUES (3, 3, 1, 1, 3.00, 50, "2012-06-24 12:42:32");
 INSERT INTO nucleo_itemestabelecimento (id, estabelecimento_id, item_id, disponibilidade, preco, desconto, data) VALUES (4, 1, 2, 1, 2.25, 15, "2012-06-24 12:46:31");
-INSERT INTO nucleo_itemestabelecimento (id, estabelecimento_id, item_id, disponibilidade, preco, desconto, data) VALUES (5, 1, 2, 1, 2.10, 5, "2012-06-24 12:49:31");
+INSERT INTO nucleo_itemestabelecimento (id, estabelecimento_id, item_id, disponibilidade, preco, desconto, data) VALUES (5, 2, 2, 1, 2.10, 5, "2012-06-24 12:49:31");
 

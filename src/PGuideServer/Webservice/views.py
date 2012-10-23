@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #from django.contrib.auth import authenticate
-import simplejson
+import simplejson, json
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from PGuideServer.nucleo.models import Usuario, Item, Marca, Categoria,\
@@ -8,7 +8,7 @@ from PGuideServer.nucleo.models import Usuario, Item, Marca, Categoria,\
     Estabelecimento, PreferenciasDoUsuario, FormasDePagamento
 from django.core import serializers
 from PGuideServer.Recomendacao.utils import Localizacao, Valores
-from PGuideServer.Recomendacao.views import avaliar
+from PGuideServer.Recomendacao.views import avaliar, avaliarMultiplosItens
 
 def login(request):
     username = request.GET['username']
@@ -68,18 +68,24 @@ def cadastrar_preferencias(request):
     username = request.GET['username']
     minPreco = request.GET['minPreco']
     maxPreco = request.GET['maxPreco']
+    irPreco = request.GET['irPreco']
     minReputacao = request.GET['minReputacao']
+    irReputacao = request.GET['irReputacao']
     minDistancia = request.GET['minDistancia']
     maxDistancia = request.GET['maxDistancia']
+    irDistancia = request.GET['irDistancia']
     formasDePagamento = request.GET['formasDePagamento']
     
     pref = PreferenciasDoUsuario()
     pref.minPrecoItem = minPreco
     pref.maxPrecoItem = maxPreco
+    pref.relevanciaPrecoItem = irPreco
     pref.minReputacaoItem = minReputacao
     pref.maxReputacaoItem = 5
+    pref.relevanciaReputacaoItem = irReputacao
     pref.minDistanciaItem = minDistancia
     pref.maxDistanciaItem = maxDistancia
+    pref.relevanciaDistanciaItem = irDistancia
     pref.formasPagamento = formasDePagamento
     
     try:
@@ -416,9 +422,10 @@ def buscarRecomendacaoProduto(request):
         busca = []
     
     try:
-        ind_preco = Valores(user.preferencias.minPrecoItem, user.preferencias.maxPrecoItem, user.preferencias.relevanciaPrecoItem)
-        ind_rep = Valores(user.preferencias.minReputacaoItem, user.preferencias.maxReputacaoItem, user.preferencias.relevanciaReputacaoItem)
-        ind_dist = Valores(user.preferencias.minDistanciaItem, user.preferencias.maxDistanciaItem, user.preferencias.relevanciaDistanciaItem)
+        preferencias = PreferenciasDoUsuario.objects.get(pk=user.preferencias)
+        ind_preco = Valores(preferencias.minPrecoItem, preferencias.maxPrecoItem, preferencias.relevanciaPrecoItem)
+        ind_rep = Valores(preferencias.minReputacaoItem, preferencias.maxReputacaoItem, preferencias.relevanciaReputacaoItem)
+        ind_dist = Valores(preferencias.minDistanciaItem, preferencias.maxDistanciaItem, preferencias.relevanciaDistanciaItem)
         res_busca = avaliar(userLocation, busca, ind_preco, ind_rep, ind_dist, [1])
     except Exception, e:
         print e
@@ -432,10 +439,46 @@ def buscarRecomendacaoProduto(request):
         pass
     
     data = serializers.serialize("json", res_busca, indent=2)
-    #data = serializers.serialize("json", res_busca, indent=2)
     
     if user is not None:
         return HttpResponse(data, 
             content_type = 'application/json; charset=utf8'
         )
+
+
+def buscarRecomendacaoLista(request):
+    '''
+        /buscarRecomendacaoLista? username=XXX & 
+                                    latitude=XXX & longitude=XXX
+                                    
+    '''
+    username = request.GET['username']
+    latitude = float(request.GET['latitude'])
+    longitude = float(request.GET['longitude'])
     
+    userLocation = Localizacao(latitude, longitude)
+    try:
+        user = Usuario.objects.get(username=username)
+    except Exception, e:
+        print e
+        return None
+    
+    estabs = []
+    try:
+        preferencias = PreferenciasDoUsuario.objects.get(pk=user.preferencias)
+        ind_preco = Valores(preferencias.minPrecoItem, preferencias.maxPrecoItem, preferencias.relevanciaPrecoItem)
+        ind_rep = Valores(preferencias.minReputacaoItem, preferencias.maxReputacaoItem, preferencias.relevanciaReputacaoItem)
+        ind_dist = Valores(preferencias.minDistanciaItem, preferencias.maxDistanciaItem, preferencias.relevanciaDistanciaItem)
+        item_list = ItemLista.objects.filter(user=user.user_ptr_id, status=1)
+        estabs = avaliarMultiplosItens(userLocation, item_list, ind_preco, ind_rep, ind_dist, None)
+    except Exception, e:
+        print e
+    
+    data = serializers.serialize("json", estabs, indent=2)
+    
+    if user is not None:
+        return HttpResponse(data, 
+            content_type = 'application/json; charset=utf8'
+        )
+
+
