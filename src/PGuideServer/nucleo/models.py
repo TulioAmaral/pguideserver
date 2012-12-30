@@ -130,7 +130,7 @@ class HistoricoConsultas(models.Model):
 class Estabelecimento(models.Model):
     nome_curto = models.CharField(max_length = 50)
     nome_completo = models.CharField(max_length = 100)
-    endereco = models.TextField(max_length = 1000)
+    endereco = models.TextField(max_length = 1000) # logradouro
     bairro = models.CharField(max_length = 200)
     cidade = models.CharField(max_length = 100)
     estado = models.CharField(max_length = 100, choices = COMBO_ESTADOS)

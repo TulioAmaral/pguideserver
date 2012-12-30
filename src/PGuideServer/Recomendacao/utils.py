@@ -1,6 +1,4 @@
 # -*- coding:utf-8 -*-
-
-
 from math import pi, sin, cos, sqrt, atan2
 from django.db import models
 from PGuideServer.nucleo.models import ItemEstabelecimento, Estabelecimento
@@ -52,7 +50,7 @@ class Localizacao:
 
 def calcularDistancia(localizacao_usuario, localizacao_estabelecimento):
    
-    '''Haversine formula
+    ''' Haversine formula
         give coordinates as (lat_decimal,lon_decimal) tuples
     '''
     earthradius = 6371.0

@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-import operator
+import operator, random
 
 from PGuideServer.Recomendacao.utils import calcularDistancia, AvaliacaoItem, Localizacao,\
     AvaliacaoEstabelecimento, Valores
@@ -112,8 +112,8 @@ def avaliarMultiplosItens(localizacao_usuario, item_list, indice_preco, indice_r
     
     for estab in estabs:
         loc_est = Localizacao(estab.estabelecimento.latitude, estab.estabelecimento.longitude)
-#        estab.pontuacao += float( "%.2f" % calcularPontuacaoPreco(indice_preco, estab.preco_total) )
-#        estab.pontuacao += float( "%.2f" % calcularPontuacaoProximidade(indice_proximidade, localizacao_usuario, loc_est) )
+        estab.pontuacao += float( "%.2f" % calcularPontuacaoPreco(indice_preco, estab.preco_total) )
+        estab.pontuacao += float( "%.2f" % calcularPontuacaoProximidade(indice_proximidade, localizacao_usuario, loc_est) )
         estab.pontuacao += float( "%.2f" % calcularPontuacaoReputacao(indice_reputacao, estab.estabelecimento.reputacao.media) )
     
     # ordenação e proporcionalização em percentual
@@ -135,7 +135,7 @@ def calcularPontuacaoProximidade(indice_proximidade, loc_usuario, loc_est):
     '''
     try:
         distancia = calcularDistancia(loc_usuario, loc_est)
-        pontuacao = ( 100.0 - ((distancia - indice_proximidade.diferenca()) * 100.0)/float(indice_proximidade.diferenca()) )
+        pontuacao = ( 100.0 - ((distancia - indice_proximidade.minimo) * 100.0)/float(indice_proximidade.diferenca()) )
         return float( "%.2f" % (pontuacao * indice_proximidade.relevancia)/100.0 )
     except Exception, e:
         print "Recomendacao.views.calcularPontuacaoProximidade:", e
@@ -187,22 +187,22 @@ def filtragemHistorico(usuario):
     
     return dic
     
-def recomendacaoExclusiva(usuario):
+def recomendacaoExclusiva(usuario, categoria = None, quantidade = 1):
     '''
-        esta função recomenda itens em oferta de categorias que sejam do 
+        esta função retorna uma lista de itens em oferta de categorias que sejam do 
         interesse do usuario de uma categoria exclusiva (a que mais se encaixa 
         com o perfil do usuário)
         @param usuario: Usuario
         @rtype: XXX
     '''
-    import operator
+    if categoria is None:
+        dict = filtragemHistorico(usuario)
+        categoria = max(dict.iteritems(), key=operator.itemgetter(1))[0] # busca pela categoria que tem o maior numero de ocorrencias
+    itens = ItemEstabelecimento.objects.filter(item__categoria = categoria).exclude(desconto=0).order_by("-desconto")
+    return itens[0:quantidade]
     
-    dict = filtragemHistorico(usuario)
-    categoria_unica = max(dict.iteritems(), key=operator.itemgetter(1))[0]
-    itens = ItemEstabelecimento.objects.filter(item__categoria = categoria_unica).exclude(desconto=0).order_by("desconto")
     
-    
-def recomendacaoProbabilistica(usuario):
+def recomendacaoProbabilistica(usuario, quantidade = 1):
     '''
         esta função recomenda itens em oferta de categorias que sejam do 
         interesse do usuario de forma proporcional ao interesse do mesmo, 
@@ -214,9 +214,22 @@ def recomendacaoProbabilistica(usuario):
     # aprendizagem por reforço: cada ocorrencia sera premiada com um "ticket" 
     # de +1 possibilidades de ser sorteado, no fim um sorteio aleatório é realizado
     l = list()
-    for key in dict:
-        for i in range(dict[key]):
+    for key in dict: # para cada categoria
+        for i in range(dict[key]): # para cada ticket (ocorrencia) na categoria
             l.append(key)
+    
+    itens = list()
+    
+    # adicionando itens de categorias aleatorias à lista de recomendação
+    qtd = 0
+    while(qtd<quantidade):
+        rand = random.randint(0, len(l)-1)
+        item = recomendacaoExclusiva(usuario, rand, 1)
+        if item not in itens:
+            itens.append(item)
+            qtd += 1
+            
+    return itens
     
     
     
