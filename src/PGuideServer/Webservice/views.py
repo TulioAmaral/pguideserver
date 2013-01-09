@@ -282,6 +282,14 @@ def getEstabelecimento(request):
     data = serializers.serialize("json", estabelecimento, indent=2)
     return HttpResponse(data, content_type = 'application/json; charset=utf8')
     
+def getItemEstabelecimento(request):
+    id = request.GET["id"]
+
+    itemEstabelecimento = ItemEstabelecimento.objects.filter(pk=id)
+    
+    data = serializers.serialize("json", itemEstabelecimento, indent=2)
+    return HttpResponse(data, content_type = 'application/json; charset=utf8')
+    
 
 def getItem(request):
     n_id = int(request.GET['id'])
@@ -426,7 +434,7 @@ def buscarRecomendacaoProduto(request):
         ind_preco = Valores(preferencias.minPrecoItem, preferencias.maxPrecoItem, preferencias.relevanciaPrecoItem)
         ind_rep = Valores(preferencias.minReputacaoItem, preferencias.maxReputacaoItem, preferencias.relevanciaReputacaoItem)
         ind_dist = Valores(preferencias.minDistanciaItem, preferencias.maxDistanciaItem, preferencias.relevanciaDistanciaItem)
-        res_busca = avaliar(userLocation, busca, ind_preco, ind_rep, ind_dist, [1])
+        res_busca = avaliar(userLocation, busca, ind_preco, ind_rep, ind_dist, None)
     except Exception, e:
         print e
     
@@ -472,7 +480,7 @@ def buscarRecomendacaoLista(request):
         item_list = ItemLista.objects.filter(user=user.user_ptr_id, status=1)
         estabs = avaliarMultiplosItens(userLocation, item_list, ind_preco, ind_rep, ind_dist, None)
     except Exception, e:
-        print e
+        print "erro",e
     
     data = serializers.serialize("json", estabs, indent=2)
     
