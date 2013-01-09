@@ -41,9 +41,15 @@ def avaliar(localizacao_usuario, estabelecimento_item_list, indice_preco, indice
         #print "\n\n" + x.item.estabelecimento.nome_curto + "\n" + u"preço: " + str(x.item.preco) + "\n" + str(x.pontuacao) + " pontos"
         lista_estabelecimentos_avaliados.append(x)
         
+    for i in lista_estabelecimentos_avaliados:
+        print i.pontuacao
+    print "==="
     # ordenando
     lista_estabelecimentos_avaliados.sort(key=operator.attrgetter('pontuacao'))
     lista_estabelecimentos_avaliados.reverse()
+        
+    for i in lista_estabelecimentos_avaliados:
+        print i.pontuacao
     
     # valores em referência ao percencual
     MAX = lista_estabelecimentos_avaliados[0].pontuacao
@@ -80,6 +86,7 @@ def avaliarMultiplosItens(localizacao_usuario, item_list, indice_preco, indice_r
     for estab in estabs_primeiro_item:
         l_primeiro.append(estab.estabelecimento)
     conj1 = set(l_primeiro) # conjunto de estabs que tem o primeiro item
+
     #2
     for item in item_list:
         if item is not item_list[0]:
@@ -88,6 +95,8 @@ def avaliarMultiplosItens(localizacao_usuario, item_list, indice_preco, indice_r
             for estab in estabs_item_atual:
                 l_atual.append(estab.estabelecimento)
             conjAtual = set(l_atual) # conjunto de estabs que tem o item atual
+            print conj1
+            print conjAtual
             conj1 = conj1.intersection(conjAtual) # conjunto de interseção
             
     #3 lista com os estabelecimentos que tem todos os itens
@@ -136,7 +145,7 @@ def calcularPontuacaoProximidade(indice_proximidade, loc_usuario, loc_est):
     try:
         distancia = calcularDistancia(loc_usuario, loc_est)
         pontuacao = ( 100.0 - ((distancia - indice_proximidade.minimo) * 100.0)/float(indice_proximidade.diferenca()) )
-        return float( "%.2f" % (pontuacao * indice_proximidade.relevancia)/100.0 )
+        return (pontuacao * indice_proximidade.relevancia)/100.0 
     except Exception, e:
         print "Recomendacao.views.calcularPontuacaoProximidade:", e
         return 0
@@ -152,7 +161,7 @@ def calcularPontuacaoPreco(indice_preco, preco):
         pontuacao = ( 100 - ((preco - indice_preco.minimo) * 100)/float(indice_preco.diferenca()) )
     except Exception, e:
         print "Recomendacao.views.calcularPontuacaoPreco:", e    
-    return float( "%.2f" % (pontuacao * indice_preco.relevancia)/100.0 )
+    return (pontuacao * indice_preco.relevancia)/100.0 
 
     
 def calcularPontuacaoReputacao(indice_reputacao, reputacao):
@@ -165,7 +174,7 @@ def calcularPontuacaoReputacao(indice_reputacao, reputacao):
         pontuacao = ((reputacao - indice_reputacao.minimo) * 100)/float(indice_reputacao.diferenca())
     except Exception, e:
         print "Recomendacao.views.calcularPontuacaoReputacao:", e
-    return float( "%.2f" % ((pontuacao * indice_reputacao.relevancia)/100.0) )
+    return (pontuacao * indice_reputacao.relevancia)/100.0
     
     
 def filtragemHistorico(usuario):
