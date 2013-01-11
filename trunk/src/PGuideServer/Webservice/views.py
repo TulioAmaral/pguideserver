@@ -5,10 +5,22 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from PGuideServer.nucleo.models import Usuario, Item, Marca, Categoria,\
     UnidadeDeMedida, ItemLista, ItemEstabelecimento, HistoricoConsultas,\
-    Estabelecimento, PreferenciasDoUsuario, FormasDePagamento
+    Estabelecimento, PreferenciasDoUsuario, FormasDePagamento, Reputacao
 from django.core import serializers
 from PGuideServer.Recomendacao.utils import Localizacao, Valores
 from PGuideServer.Recomendacao.views import avaliar, avaliarMultiplosItens
+
+def avaliarEstabelecimento(request):
+    username = request.GET['username']
+    estabelecimento_id = request.GET['estabelecimento']
+    avaliacao = request.GET['avaliacao']
+    
+    user = Usuario.objects.get(username=username)
+    if user is not None:
+        estabelecimento = Estabelecimento.objects.get(pk=estabelecimento_id)
+        estabelecimento.reputacao.addVoto(avaliacao)
+        estabelecimento.reputacao.save(force_update=True)
+        return HttpResponse(simplejson.dumps({"ok":True}), content_type = 'application/json; charset=utf8')
 
 def login(request):
     username = request.GET['username']
@@ -154,6 +166,15 @@ def getProfile(request):
         simplejson.dumps({"username": "-1"}), 
         content_type = 'application/json; charset=utf8'
     )
+    
+def getReputacao(request):
+    rep_id = request.GET['id']
+
+    reputacao = Reputacao.objects.get(pk = rep_id)
+    return HttpResponse(
+        simplejson.dumps({"avaliacoes":reputacao.quantidade_avaliacoes,"media":reputacao.media}), 
+        content_type = 'application/json; charset=utf8')
+        
 
 def getPreferencias(request):
     username = request.GET['username']
@@ -235,6 +256,21 @@ def pesquisar(request):
     query = Item.objects.filter(nome__contains = palavra_chave)
     data = serializers.serialize("json", query, indent=2)
     
+    if user is not None:
+        return HttpResponse(data, content_type = "application/json; charset=utf8")
+    
+def getEstabelecimentos(request):
+    palavra_chave = request.GET['palavra_chave']
+    username = request.GET['username']
+    
+    try:
+        user = User.objects.get(username=username)
+    except:
+        pass
+    query = []
+    query.extend(Estabelecimento.objects.filter(nome_curto__contains=palavra_chave))
+    query = list(set(query).union(Estabelecimento.objects.filter(nome_completo__contains=palavra_chave)))
+    data = serializers.serialize("json", query, indent=2)
     if user is not None:
         return HttpResponse(data, content_type = "application/json; charset=utf8")
     

@@ -27,12 +27,15 @@ urlpatterns = patterns('',
     (r'^getEstabelecimento/', "PGuideServer.Webservice.views.getEstabelecimento"),
     (r'^getItemEstabelecimento/', "PGuideServer.Webservice.views.getItemEstabelecimento"),
     (r'^getPreferencias/', "PGuideServer.Webservice.views.getPreferencias"),
+    (r'^getReputacao/', "PGuideServer.Webservice.views.getReputacao"),
     
     # set
     (r'^adicionarItemNaLista/', "PGuideServer.Webservice.views.adicionarItemNaLista"),
+    (r'^avaliarEstabelecimento/', "PGuideServer.Webservice.views.avaliarEstabelecimento"),
     
     # search
     (r'^pesquisar/', "PGuideServer.Webservice.views.pesquisar"),
+    (r'^getEstabelecimentos/', "PGuideServer.Webservice.views.getEstabelecimentos"),
     (r'^getListaDeCompras/', "PGuideServer.Webservice.views.getListaDeCompras"),
     (r'^buscarRecomendacaoProduto/', "PGuideServer.Webservice.views.buscarRecomendacaoProduto"),
     (r'^buscarRecomendacaoLista/', "PGuideServer.Webservice.views.buscarRecomendacaoLista"),

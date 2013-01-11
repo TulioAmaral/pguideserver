@@ -161,8 +161,8 @@ class Reputacao(models.Model):
     media = models.FloatField()
     
     def addVoto(self, nota):
-        self.media = ((self.quantidade_avaliacoes * self.media) + nota)/(self.quantidade_avaliacoes+1.0)
-        self.quantidade_avaliacoes += self.quantidade_avaliacoes
+        self.media = ((self.quantidade_avaliacoes * self.media) + float(nota))/(self.quantidade_avaliacoes+1.0)
+        self.quantidade_avaliacoes += 1
 
 
 class ItemEstabelecimento(models.Model):
