@@ -41,15 +41,9 @@ def avaliar(localizacao_usuario, estabelecimento_item_list, indice_preco, indice
         #print "\n\n" + x.item.estabelecimento.nome_curto + "\n" + u"preço: " + str(x.item.preco) + "\n" + str(x.pontuacao) + " pontos"
         lista_estabelecimentos_avaliados.append(x)
         
-    for i in lista_estabelecimentos_avaliados:
-        print i.pontuacao
-    print "==="
     # ordenando
     lista_estabelecimentos_avaliados.sort(key=operator.attrgetter('pontuacao'))
     lista_estabelecimentos_avaliados.reverse()
-        
-    for i in lista_estabelecimentos_avaliados:
-        print i.pontuacao
     
     # valores em referência ao percencual
     MAX = lista_estabelecimentos_avaliados[0].pontuacao
@@ -189,10 +183,10 @@ def filtragemHistorico(usuario):
     
     dic = dict()
     for item in historico:
-        if dic.has_key(item.categoria):
-            dic[item.categoria] += 1
+        if dic.has_key(item.item.categoria):
+            dic[item.item.categoria] += 1
         else:
-            dic[item.categoria] = 1
+            dic[item.item.categoria] = 1
     
     return dic
     
@@ -205,8 +199,8 @@ def recomendacaoExclusiva(usuario, categoria = None, quantidade = 1):
         @rtype: XXX
     '''
     if categoria is None:
-        dict = filtragemHistorico(usuario)
-        categoria = max(dict.iteritems(), key=operator.itemgetter(1))[0] # busca pela categoria que tem o maior numero de ocorrencias
+        dictt = filtragemHistorico(usuario)
+        categoria = max(dictt.iteritems(), key=operator.itemgetter(1))[0] # busca pela categoria que tem o maior numero de ocorrencias
     itens = ItemEstabelecimento.objects.filter(item__categoria = categoria).exclude(desconto=0).order_by("-desconto")
     return itens[0:quantidade]
     
@@ -219,34 +213,22 @@ def recomendacaoProbabilistica(usuario, quantidade = 1):
         @param usuario: Usuario
         @rtype: XXX
     '''
-    dict = filtragemHistorico(usuario)
+    dictt = filtragemHistorico(usuario)
     # aprendizagem por reforço: cada ocorrencia sera premiada com um "ticket" 
     # de +1 possibilidades de ser sorteado, no fim um sorteio aleatório é realizado
     l = list()
-    for key in dict: # para cada categoria
-        for i in range(dict[key]): # para cada ticket (ocorrencia) na categoria
+    for key in dictt: # para cada categoria
+        for i in range(dictt[key]): # para cada ticket (ocorrencia) na categoria
             l.append(key)
-    
+           
     itens = list()
     
     # adicionando itens de categorias aleatorias à lista de recomendação
     qtd = 0
     while(qtd<quantidade):
-        rand = random.randint(0, len(l)-1)
-        item = recomendacaoExclusiva(usuario, rand, 1)
-        if item not in itens:
+        cat_rand = random.randint(0, len(l)-1)
+        item = recomendacaoExclusiva(usuario, l[cat_rand], 1)
+        if len(item)>0:
             itens.append(item)
             qtd += 1
-            
     return itens
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
