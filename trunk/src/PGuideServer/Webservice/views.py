@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #from django.contrib.auth import authenticate
-import simplejson, json
+import simplejson
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from PGuideServer.nucleo.models import Usuario, Item, Marca, Categoria,\
@@ -8,7 +8,36 @@ from PGuideServer.nucleo.models import Usuario, Item, Marca, Categoria,\
     Estabelecimento, PreferenciasDoUsuario, FormasDePagamento, Reputacao
 from django.core import serializers
 from PGuideServer.Recomendacao.utils import Localizacao, Valores
-from PGuideServer.Recomendacao.views import avaliar, avaliarMultiplosItens
+from PGuideServer.Recomendacao.views import avaliar, avaliarMultiplosItens,\
+    recomendacaoProbabilistica
+
+def getNomeItem(request):
+    username = request.GET['username']
+    id_ = request.GET['id']
+    
+    if Usuario.objects.get(username=username) is not None:
+        item = ItemEstabelecimento.objects.get(id=id_)
+        return HttpResponse(simplejson.dumps({"nome":item.item.nome}),
+                            content_type = 'application/json; charset=utf8')
+    
+
+def buscarOfertas(request):
+    username = request.GET['username']
+    
+    try:
+        user = Usuario.objects.get(username=username)
+    except:
+        pass
+    
+    if user is not None:
+        itens = recomendacaoProbabilistica(user, 5)
+        lista = list()
+        for item in itens:
+            lista.append(ItemEstabelecimento.objects.get(id=item).id)
+    
+        return HttpResponse(simplejson.dumps({"lista":lista}), 
+                            content_type = 'application/json; charset=utf8')
+        
 
 def avaliarEstabelecimento(request):
     username = request.GET['username']
