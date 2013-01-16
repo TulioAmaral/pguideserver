@@ -53,7 +53,7 @@ def calcularDistancia(localizacao_usuario, localizacao_estabelecimento):
     ''' Haversine formula
         give coordinates as (lat_decimal,lon_decimal) tuples
     '''
-    earthradius = 6371.0
+    earthradius = 6367.43
 
     lat1 = localizacao_usuario.latitude
     lon1 = localizacao_usuario.longitude
