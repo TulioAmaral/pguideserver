@@ -27,6 +27,26 @@ def avaliar(localizacao_usuario, estabelecimento_item_list, indice_preco, indice
         @rtype: list(AvaliacaoItem)
     '''
     
+    # novo algoritmo de captação dos valores minimos e maximos
+    try:
+        lista = estabelecimento_item_list
+        lista.sort(key=operator.attrgetter('preco'))
+        indice_preco.maximo = lista[len(lista)-1].preco
+        indice_preco.minimo = lista[0].preco
+        
+        lista.sort(key=operator.attrgetter('estabelecimento.reputacao.media'))
+        indice_reputacao.maximo =  lista[len(lista)-1].estabelecimento.reputacao.media
+        indice_reputacao.minimo =  lista[0].estabelecimento.reputacao.media
+        
+        for i in lista:
+            i.distancia = calcularDistancia(localizacao_usuario, Localizacao(i.estabelecimento.latitude, i.estabelecimento.longitude))
+        lista.sort(key=operator.attrgetter('distancia'))
+        indice_preco.maximo = lista[len(lista)-1].distancia
+        indice_preco.minimo = lista[0].distancia
+    except Exception, e:
+        print e
+    # fim do novo algoritmo
+    
     lista_estabelecimentos_avaliados = []
     for item_estabelecimento in estabelecimento_item_list:
         x = AvaliacaoItem()
