@@ -41,8 +41,8 @@ def avaliar(localizacao_usuario, estabelecimento_item_list, indice_preco, indice
         for i in lista:
             i.distancia = calcularDistancia(localizacao_usuario, Localizacao(i.estabelecimento.latitude, i.estabelecimento.longitude))
         lista.sort(key=operator.attrgetter('distancia'))
-        indice_preco.maximo = lista[len(lista)-1].distancia
-        indice_preco.minimo = lista[0].distancia
+        indice_proximidade.maximo = lista[len(lista)-1].distancia
+        indice_proximidade.minimo = lista[0].distancia
     except Exception, e:
         print e
     # fim do novo algoritmo
